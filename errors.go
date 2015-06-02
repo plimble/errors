@@ -8,6 +8,8 @@ const (
 	Forbidden    = 403
 )
 
+var EnableDevMsg = false
+
 type Errors struct {
 	HttpStatus int    `json:"-"`
 	ErrMessage string `json:"message,omitempty"`
