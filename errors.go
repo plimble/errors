@@ -33,81 +33,61 @@ func NewMsg(opt ...Option) error {
 	return err
 }
 
-func Http(i int) Option {
+func HTTP(i int) Option {
 	return func(err *Errors) {
-		err.HttpStatus = i
+		err.httpStatus = i
 	}
 }
 
 func Msg(s string) Option {
 	return func(err *Errors) {
-		err.ErrMessage = s
+		err.Message = s
 	}
 }
 
 func Msgf(format string, v ...interface{}) Option {
 	return func(err *Errors) {
-		err.ErrMessage = fmt.Sprintf(format, v...)
+		err.Message = fmt.Sprintf(format, v...)
 	}
 }
 
 func Type(s string) Option {
 	return func(err *Errors) {
-		err.ErrType = s
+		err.Type = s
 	}
 }
 
 func Code(s string) Option {
 	return func(err *Errors) {
-		err.ErrCode = s
+		err.Code = s
 	}
 }
 
 func Dev(s string) Option {
 	return func(err *Errors) {
-		err.ErrMessage = s
+		err.Message = s
 	}
 }
 
 type Errors struct {
-	HttpStatus int    `json:"-"`
-	ErrMessage string `json:"message,omitempty"`
-	ErrType    string `json:"error,omitempty"`
-	ErrCode    string `json:"code,omitempty"`
-	ErrDevMsg  string `json:"dev_message,omitempty"`
+	httpStatus int    `json:"-"`
+	Message    string `json:"message,omitempty"`
+	Type       string `json:"error,omitempty"`
+	Code       string `json:"code,omitempty"`
+	DevMsg     string `json:"dev_message,omitempty"`
 }
 
 func (err *Errors) Error() string {
-	return err.ErrMessage
+	return err.Message
 }
 
-func (err *Errors) Http(i int) *Errors {
-	err.HttpStatus = i
-
-	return err
-}
-
-func (err *Errors) Type(s string) *Errors {
-	err.ErrType = s
-
-	return err
-}
-
-func (err *Errors) Code(s string) *Errors {
-	err.ErrCode = s
-
-	return err
-}
-
-func (err *Errors) Dev(s string) *Errors {
-	err.ErrDevMsg = s
-
-	return err
+func (err *Errors) Http() int {
+	return err.httpStatus
 }
 
 func IsStatus(status int, err error) bool {
 	if errs, ok := err.(*Errors); ok {
-		if status == errs.HttpStatus {
+		if status == errs.httpStatus {
 			return true
 		}
 	}
