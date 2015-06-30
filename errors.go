@@ -1,5 +1,10 @@
 package errors
 
+import (
+	"errors"
+	"fmt"
+)
+
 const (
 	Internal     = 500
 	BadReq       = 400
@@ -8,7 +13,61 @@ const (
 	Forbidden    = 403
 )
 
-var EnableDevMsg = false
+func New(s string) error {
+	return errors.New(s)
+}
+
+func Newf(format string, v ...interface{}) error {
+	return fmt.Errorf(format, v...)
+}
+
+type Option func(*Errors)
+
+func NewMsg(opt ...Option) error {
+	err := &Errors{}
+
+	for i := 0; i < len(opt); i++ {
+		opt[i](err)
+	}
+
+	return err
+}
+
+func Http(i int) Option {
+	return func(err *Errors) {
+		err.HttpStatus = i
+	}
+}
+
+func Msg(s string) Option {
+	return func(err *Errors) {
+		err.ErrMessage = s
+	}
+}
+
+func Msgf(format string, v ...interface{}) Option {
+	return func(err *Errors) {
+		err.ErrMessage = fmt.Sprintf(format, v...)
+	}
+}
+
+func Type(s string) Option {
+	return func(err *Errors) {
+		err.ErrType = s
+	}
+}
+
+func Code(s string) Option {
+	return func(err *Errors) {
+		err.ErrCode = s
+	}
+}
+
+func Dev(s string) Option {
+	return func(err *Errors) {
+		err.ErrMessage = s
+	}
+}
 
 type Errors struct {
 	HttpStatus int    `json:"-"`
@@ -20,12 +79,6 @@ type Errors struct {
 
 func (err *Errors) Error() string {
 	return err.ErrMessage
-}
-
-func New(msg string) *Errors {
-	return &Errors{
-		ErrMessage: msg,
-	}
 }
 
 func (err *Errors) Http(i int) *Errors {
@@ -46,7 +99,7 @@ func (err *Errors) Code(s string) *Errors {
 	return err
 }
 
-func (err *Errors) DevMsg(s string) *Errors {
+func (err *Errors) Dev(s string) *Errors {
 	err.ErrDevMsg = s
 
 	return err
