@@ -22,16 +22,30 @@ func (e *Errors) Error() string {
 	return e.ErrMessage
 }
 
-func New(code int, message string) error {
+func New(message string) error {
 	return &Errors{
-		ErrCode:    code,
+		ErrCode:    500,
 		ErrMessage: message,
 	}
 }
 
-func Newf(code int, format string, v ...interface{}) error {
+func NewCode(code int, message string) error {
+	return &Errors{
+		ErrCode:    500,
+		ErrMessage: message,
+	}
+}
+
+func NewCodef(code int, format string, v ...interface{}) error {
 	return &Errors{
 		ErrCode:    code,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+func Newf(format string, v ...interface{}) error {
+	return &Errors{
+		ErrCode:    500,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
