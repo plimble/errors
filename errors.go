@@ -1,102 +1,107 @@
 package errors
 
 import (
-	"errors"
 	"fmt"
 )
 
-const (
-	Internal     = 500
-	BadReq       = 400
-	NotFound     = 404
-	Unauthorized = 401
-	Forbidden    = 403
-)
-
-func New(s string) error {
-	return errors.New(s)
-}
-
-func Newf(format string, v ...interface{}) error {
-	return fmt.Errorf(format, v...)
-}
-
-type Option func(*Errors)
-
-func NewMsg(opt ...Option) error {
-	err := &Errors{}
-
-	for i := 0; i < len(opt); i++ {
-		opt[i](err)
-	}
-
-	return err
-}
-
-func HTTP(i int) Option {
-	return func(err *Errors) {
-		err.httpStatus = i
-	}
-}
-
-func Msg(s string) Option {
-	return func(err *Errors) {
-		err.Message = s
-	}
-}
-
-func Msgf(format string, v ...interface{}) Option {
-	return func(err *Errors) {
-		err.Message = fmt.Sprintf(format, v...)
-	}
-}
-
-func Type(s string) Option {
-	return func(err *Errors) {
-		err.Type = s
-	}
-}
-
-func Code(s string) Option {
-	return func(err *Errors) {
-		err.Code = s
-	}
-}
-
-func Dev(s string) Option {
-	return func(err *Errors) {
-		err.Message = s
-	}
+type Error interface {
+	Code() int
+	Error() string
 }
 
 type Errors struct {
-	httpStatus int    `json:"-"`
-	Message    string `json:"message,omitempty"`
-	Type       string `json:"error,omitempty"`
-	Code       string `json:"code,omitempty"`
-	DevMsg     string `json:"dev_message,omitempty"`
+	ErrCode    int    `json:"-"`
+	ErrMessage string `json:"message"`
 }
 
-func (err *Errors) Error() string {
-	return err.Message
+func (e *Errors) Code() int {
+	return e.ErrCode
 }
 
-func (err *Errors) Http() int {
-	return err.httpStatus
+func (e *Errors) Error() string {
+	return e.ErrMessage
 }
 
-func IsStatus(status int, err error) bool {
-	if errs, ok := err.(*Errors); ok {
-		if status == errs.httpStatus {
-			return true
-		}
+func New(code int, message string) error {
+	return &Errors{
+		ErrCode:    code,
+		ErrMessage: message,
 	}
-
-	return false
 }
 
-func Panic(err error) {
-	if err != nil {
-		panic(err)
+func Newf(code int, format string, v ...interface{}) error {
+	return &Errors{
+		ErrCode:    code,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+func BadRequest(message string) error {
+	return &Errors{
+		ErrCode:    400,
+		ErrMessage: message,
+	}
+}
+
+func Unauthorized(message string) error {
+	return &Errors{
+		ErrCode:    401,
+		ErrMessage: message,
+	}
+}
+
+func Forbidden(message string) error {
+	return &Errors{
+		ErrCode:    403,
+		ErrMessage: message,
+	}
+}
+
+func NotFound(message string) error {
+	return &Errors{
+		ErrCode:    404,
+		ErrMessage: message,
+	}
+}
+
+func InternalError(message string) error {
+	return &Errors{
+		ErrCode:    500,
+		ErrMessage: message,
+	}
+}
+
+func BadRequestf(format string, v ...interface{}) error {
+	return &Errors{
+		ErrCode:    400,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+func Unauthorizedf(format string, v ...interface{}) error {
+	return &Errors{
+		ErrCode:    401,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+func Forbiddenf(format string, v ...interface{}) error {
+	return &Errors{
+		ErrCode:    403,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+func NotFoundf(format string, v ...interface{}) error {
+	return &Errors{
+		ErrCode:    404,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+func InternalErrorf(format string, v ...interface{}) error {
+	return &Errors{
+		ErrCode:    500,
+		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
