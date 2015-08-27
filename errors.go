@@ -5,16 +5,22 @@ import (
 )
 
 type Error interface {
-	Code() int
+	Status() int
 	Error() string
+	Code() string
 }
 
 type Errors struct {
-	ErrCode    int    `json:"-"`
+	ErrStatus  int    `json:"-"`
 	ErrMessage string `json:"message"`
+	ErrCode    string `json:"code,omitempty"`
 }
 
-func (e *Errors) Code() int {
+func (e *Errors) Status() int {
+	return e.ErrStatus
+}
+
+func (e *Errors) Code() string {
 	return e.ErrCode
 }
 
@@ -24,98 +30,212 @@ func (e *Errors) Error() string {
 
 func New(message string) error {
 	return &Errors{
-		ErrCode:    500,
+		ErrStatus:  500,
 		ErrMessage: message,
 	}
 }
 
-func NewCode(code int, message string) error {
+func NewStatus(status int, message string) error {
 	return &Errors{
-		ErrCode:    500,
+		ErrStatus:  status,
 		ErrMessage: message,
 	}
 }
 
-func NewCodef(code int, format string, v ...interface{}) error {
+func NewStatusf(status int, format string, v ...interface{}) error {
 	return &Errors{
-		ErrCode:    code,
+		ErrStatus:  status,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
 
 func Newf(format string, v ...interface{}) error {
 	return &Errors{
-		ErrCode:    500,
+		ErrStatus:  500,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
 
 func BadRequest(message string) error {
 	return &Errors{
-		ErrCode:    400,
+		ErrStatus:  400,
 		ErrMessage: message,
 	}
 }
 
 func Unauthorized(message string) error {
 	return &Errors{
-		ErrCode:    401,
+		ErrStatus:  401,
 		ErrMessage: message,
 	}
 }
 
 func Forbidden(message string) error {
 	return &Errors{
-		ErrCode:    403,
+		ErrStatus:  403,
 		ErrMessage: message,
 	}
 }
 
 func NotFound(message string) error {
 	return &Errors{
-		ErrCode:    404,
+		ErrStatus:  404,
 		ErrMessage: message,
 	}
 }
 
 func InternalError(message string) error {
 	return &Errors{
-		ErrCode:    500,
+		ErrStatus:  500,
 		ErrMessage: message,
 	}
 }
 
 func BadRequestf(format string, v ...interface{}) error {
 	return &Errors{
-		ErrCode:    400,
+		ErrStatus:  400,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
 
 func Unauthorizedf(format string, v ...interface{}) error {
 	return &Errors{
-		ErrCode:    401,
+		ErrStatus:  401,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
 
 func Forbiddenf(format string, v ...interface{}) error {
 	return &Errors{
-		ErrCode:    403,
+		ErrStatus:  403,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
 
 func NotFoundf(format string, v ...interface{}) error {
 	return &Errors{
-		ErrCode:    404,
+		ErrStatus:  404,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
 
 func InternalErrorf(format string, v ...interface{}) error {
 	return &Errors{
-		ErrCode:    500,
+		ErrStatus:  500,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+// With Code
+
+func NewCode(code string, message string) error {
+	return &Errors{
+		ErrStatus:  500,
+		ErrCode:    code,
+		ErrMessage: message,
+	}
+}
+
+func NewStatusCode(status int, code, message string) error {
+	return &Errors{
+		ErrStatus:  500,
+		ErrCode:    code,
+		ErrMessage: message,
+	}
+}
+
+func NewStatusCodef(status int, code, format string, v ...interface{}) error {
+	return &Errors{
+		ErrStatus:  status,
+		ErrCode:    code,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+func NewCodef(code, format string, v ...interface{}) error {
+	return &Errors{
+		ErrStatus:  500,
+		ErrCode:    code,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+func BadRequestCode(code, message string) error {
+	return &Errors{
+		ErrStatus:  400,
+		ErrCode:    code,
+		ErrMessage: message,
+	}
+}
+
+func UnauthorizedCode(code, message string) error {
+	return &Errors{
+		ErrStatus:  401,
+		ErrCode:    code,
+		ErrMessage: message,
+	}
+}
+
+func ForbiddenCode(code, message string) error {
+	return &Errors{
+		ErrStatus:  403,
+		ErrCode:    code,
+		ErrMessage: message,
+	}
+}
+
+func NotFoundCode(code, message string) error {
+	return &Errors{
+		ErrStatus:  404,
+		ErrCode:    code,
+		ErrMessage: message,
+	}
+}
+
+func InternalErrorCode(code, message string) error {
+	return &Errors{
+		ErrStatus:  500,
+		ErrCode:    code,
+		ErrMessage: message,
+	}
+}
+
+func BadRequestCodef(code, format string, v ...interface{}) error {
+	return &Errors{
+		ErrStatus:  400,
+		ErrCode:    code,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+func UnauthorizedCodef(code, format string, v ...interface{}) error {
+	return &Errors{
+		ErrStatus:  401,
+		ErrCode:    code,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+func ForbiddenCodef(code, format string, v ...interface{}) error {
+	return &Errors{
+		ErrStatus:  403,
+		ErrCode:    code,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+func NotFoundCodef(code, format string, v ...interface{}) error {
+	return &Errors{
+		ErrStatus:  404,
+		ErrCode:    code,
+		ErrMessage: fmt.Sprintf(format, v...),
+	}
+}
+
+func InternalErrorCodef(code, format string, v ...interface{}) error {
+	return &Errors{
+		ErrStatus:  500,
+		ErrCode:    code,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
