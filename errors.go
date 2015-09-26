@@ -239,3 +239,26 @@ func InternalErrorCodef(code, format string, v ...interface{}) error {
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
+
+func IsNotFound(err error) bool {
+	return checkStatus(404, err)
+}
+
+func IsBadRequest(err error) bool {
+	return checkStatus(404, err)
+}
+
+func IsInternalError(err error) bool {
+	return checkStatus(404, err)
+}
+
+func checkStatus(status int, err error) bool {
+	errs, ok := err.(Error)
+	if ok {
+		if errs.Status() == status {
+			return true
+		}
+	}
+
+	return false
+}
