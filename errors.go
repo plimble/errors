@@ -8,12 +8,48 @@ type Error interface {
 	Status() int
 	Error() string
 	Code() string
+	NotFound() bool
+	BadRequest() bool
+	Unauthorized() bool
+	Forbidden() bool
 }
 
 type Errors struct {
 	ErrStatus  int    `json:"-"`
 	ErrMessage string `json:"message"`
 	ErrCode    string `json:"code,omitempty"`
+}
+
+func (e *Errors) NotFound() bool {
+	if e.ErrStatus == 404 {
+		return true
+	}
+
+	return false
+}
+
+func (e *Errors) BadRequest() bool {
+	if e.ErrStatus == 400 {
+		return true
+	}
+
+	return false
+}
+
+func (e *Errors) Unauthorized() bool {
+	if e.ErrStatus == 401 {
+		return true
+	}
+
+	return false
+}
+
+func (e *Errors) Forbidden() bool {
+	if e.ErrStatus == 403 {
+		return true
+	}
+
+	return false
 }
 
 func (e *Errors) Status() int {
