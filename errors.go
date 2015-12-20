@@ -64,98 +64,98 @@ func (e *Errors) Error() string {
 	return e.ErrMessage
 }
 
-func New(message string) error {
+func New(message string) Error {
 	return &Errors{
 		ErrStatus:  500,
 		ErrMessage: message,
 	}
 }
 
-func NewStatus(status int, message string) error {
+func NewStatus(status int, message string) Error {
 	return &Errors{
 		ErrStatus:  status,
 		ErrMessage: message,
 	}
 }
 
-func NewStatusf(status int, format string, v ...interface{}) error {
+func NewStatusf(status int, format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  status,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
 
-func Newf(format string, v ...interface{}) error {
+func Newf(format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  500,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
 
-func BadRequest(message string) error {
+func BadRequest(message string) Error {
 	return &Errors{
 		ErrStatus:  400,
 		ErrMessage: message,
 	}
 }
 
-func Unauthorized(message string) error {
+func Unauthorized(message string) Error {
 	return &Errors{
 		ErrStatus:  401,
 		ErrMessage: message,
 	}
 }
 
-func Forbidden(message string) error {
+func Forbidden(message string) Error {
 	return &Errors{
 		ErrStatus:  403,
 		ErrMessage: message,
 	}
 }
 
-func NotFound(message string) error {
+func NotFound(message string) Error {
 	return &Errors{
 		ErrStatus:  404,
 		ErrMessage: message,
 	}
 }
 
-func InternalError(message string) error {
+func InternalError(message string) Error {
 	return &Errors{
 		ErrStatus:  500,
 		ErrMessage: message,
 	}
 }
 
-func BadRequestf(format string, v ...interface{}) error {
+func BadRequestf(format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  400,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
 
-func Unauthorizedf(format string, v ...interface{}) error {
+func Unauthorizedf(format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  401,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
 
-func Forbiddenf(format string, v ...interface{}) error {
+func Forbiddenf(format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  403,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
 
-func NotFoundf(format string, v ...interface{}) error {
+func NotFoundf(format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  404,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
 
-func InternalErrorf(format string, v ...interface{}) error {
+func InternalErrorf(format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  500,
 		ErrMessage: fmt.Sprintf(format, v...),
@@ -164,7 +164,7 @@ func InternalErrorf(format string, v ...interface{}) error {
 
 // With Code
 
-func NewCode(code string, message string) error {
+func NewCode(code string, message string) Error {
 	return &Errors{
 		ErrStatus:  500,
 		ErrCode:    code,
@@ -172,7 +172,7 @@ func NewCode(code string, message string) error {
 	}
 }
 
-func NewStatusCode(status int, code, message string) error {
+func NewStatusCode(status int, code, message string) Error {
 	return &Errors{
 		ErrStatus:  500,
 		ErrCode:    code,
@@ -180,7 +180,7 @@ func NewStatusCode(status int, code, message string) error {
 	}
 }
 
-func NewStatusCodef(status int, code, format string, v ...interface{}) error {
+func NewStatusCodef(status int, code, format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  status,
 		ErrCode:    code,
@@ -188,7 +188,7 @@ func NewStatusCodef(status int, code, format string, v ...interface{}) error {
 	}
 }
 
-func NewCodef(code, format string, v ...interface{}) error {
+func NewCodef(code, format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  500,
 		ErrCode:    code,
@@ -196,7 +196,7 @@ func NewCodef(code, format string, v ...interface{}) error {
 	}
 }
 
-func BadRequestCode(code, message string) error {
+func BadRequestCode(code, message string) Error {
 	return &Errors{
 		ErrStatus:  400,
 		ErrCode:    code,
@@ -204,7 +204,7 @@ func BadRequestCode(code, message string) error {
 	}
 }
 
-func UnauthorizedCode(code, message string) error {
+func UnauthorizedCode(code, message string) Error {
 	return &Errors{
 		ErrStatus:  401,
 		ErrCode:    code,
@@ -212,7 +212,7 @@ func UnauthorizedCode(code, message string) error {
 	}
 }
 
-func ForbiddenCode(code, message string) error {
+func ForbiddenCode(code, message string) Error {
 	return &Errors{
 		ErrStatus:  403,
 		ErrCode:    code,
@@ -220,7 +220,7 @@ func ForbiddenCode(code, message string) error {
 	}
 }
 
-func NotFoundCode(code, message string) error {
+func NotFoundCode(code, message string) Error {
 	return &Errors{
 		ErrStatus:  404,
 		ErrCode:    code,
@@ -228,7 +228,7 @@ func NotFoundCode(code, message string) error {
 	}
 }
 
-func InternalErrorCode(code, message string) error {
+func InternalErrorCode(code, message string) Error {
 	return &Errors{
 		ErrStatus:  500,
 		ErrCode:    code,
@@ -236,7 +236,7 @@ func InternalErrorCode(code, message string) error {
 	}
 }
 
-func BadRequestCodef(code, format string, v ...interface{}) error {
+func BadRequestCodef(code, format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  400,
 		ErrCode:    code,
@@ -244,7 +244,7 @@ func BadRequestCodef(code, format string, v ...interface{}) error {
 	}
 }
 
-func UnauthorizedCodef(code, format string, v ...interface{}) error {
+func UnauthorizedCodef(code, format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  401,
 		ErrCode:    code,
@@ -252,7 +252,7 @@ func UnauthorizedCodef(code, format string, v ...interface{}) error {
 	}
 }
 
-func ForbiddenCodef(code, format string, v ...interface{}) error {
+func ForbiddenCodef(code, format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  403,
 		ErrCode:    code,
@@ -260,7 +260,7 @@ func ForbiddenCodef(code, format string, v ...interface{}) error {
 	}
 }
 
-func NotFoundCodef(code, format string, v ...interface{}) error {
+func NotFoundCodef(code, format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  404,
 		ErrCode:    code,
@@ -268,33 +268,10 @@ func NotFoundCodef(code, format string, v ...interface{}) error {
 	}
 }
 
-func InternalErrorCodef(code, format string, v ...interface{}) error {
+func InternalErrorCodef(code, format string, v ...interface{}) Error {
 	return &Errors{
 		ErrStatus:  500,
 		ErrCode:    code,
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
-}
-
-func IsNotFound(err error) bool {
-	return checkStatus(404, err)
-}
-
-func IsBadRequest(err error) bool {
-	return checkStatus(404, err)
-}
-
-func IsInternalError(err error) bool {
-	return checkStatus(404, err)
-}
-
-func checkStatus(status int, err error) bool {
-	errs, ok := err.(Error)
-	if ok {
-		if errs.Status() == status {
-			return true
-		}
-	}
-
-	return false
 }
