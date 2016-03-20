@@ -275,3 +275,11 @@ func InternalErrorCodef(code, format string, v ...interface{}) Error {
 		ErrMessage: fmt.Sprintf(format, v...),
 	}
 }
+
+func IsNotFound(err error) bool {
+	if cerr, ok := err.(Error); ok && cerr.Status() == 404 {
+		return true
+	}
+
+	return false
+}
