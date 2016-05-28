@@ -2,6 +2,8 @@ package errors
 
 import (
 	"fmt"
+
+	"github.com/Sirupsen/logrus"
 )
 
 type Error interface {
@@ -12,12 +14,17 @@ type Error interface {
 	BadRequest() bool
 	Unauthorized() bool
 	Forbidden() bool
+	Logrus(err error) *logrus.Entry
 }
 
 type Errors struct {
 	ErrStatus  int    `json:"-"`
 	ErrMessage string `json:"message"`
 	ErrCode    string `json:"code,omitempty"`
+}
+
+func (e *Errors) Logrus(err error) *logrus.Entry {
+	return logrus.WithField("code", e.Code()).WithError(err)
 }
 
 func (e *Errors) NotFound() bool {
