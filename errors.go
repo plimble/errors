@@ -14,7 +14,7 @@ type Error interface {
 	BadRequest() bool
 	Unauthorized() bool
 	Forbidden() bool
-	Logrus(err error) *logrus.Entry
+	Logrus() *logrus.Entry
 }
 
 type Errors struct {
@@ -23,8 +23,8 @@ type Errors struct {
 	ErrCode    string `json:"code,omitempty"`
 }
 
-func (e *Errors) Logrus(err error) *logrus.Entry {
-	return logrus.WithField("code", e.Code()).WithError(err)
+func (e *Errors) Logrus() *logrus.Entry {
+	return logrus.WithField("code", e.Code())
 }
 
 func (e *Errors) NotFound() bool {
