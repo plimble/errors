@@ -4,7 +4,7 @@ import "fmt"
 
 type LogFunc func(args ...interface{})
 
-func Log(err error, logFunc LogFunc) {
+func LogError(err error, logFunc LogFunc) {
 	stack := ""
 	type location interface {
 		Location() (string, int)
