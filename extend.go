@@ -10,7 +10,7 @@ type httpContext struct {
 	code   string
 }
 
-func (h *httpContext) Context() (int, string) {
+func (h *httpContext) HTTPContext() (int, string) {
 	return h.status, h.code
 }
 
