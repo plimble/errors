@@ -1,6 +1,33 @@
 package errors
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+type httpContext struct {
+	status int
+	code   string
+}
+
+func (h *httpContext) Context() (int, string) {
+	return h.status, h.code
+}
+
+func Newh(status int, code, text string) error {
+	return struct {
+		error
+		*stack
+		*httpContext
+	}{
+		errors.New(text),
+		callers(),
+		&httpContext{
+			status,
+			code,
+		},
+	}
+}
 
 type LogFunc func(args ...interface{})
 
