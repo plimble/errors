@@ -1,90 +1,49 @@
 package errors
 
 import (
-	"errors"
 	"fmt"
+	"io"
 )
 
-type httpContext struct {
+type _errorh struct {
 	status int
+	msg    string
+	*stack
 }
 
-func (h *httpContext) HTTPContext() int {
-	return h.status
+func (e _errorh) Error() string { return e.msg }
+
+func (e _errorh) Status() int { return e.status }
+
+func (e _errorh) Format(s fmt.State, verb rune) {
+	switch verb {
+	case 'v':
+		if s.Flag('+') {
+			io.WriteString(s, e.msg)
+			fmt.Fprintf(s, "%+v", e.StackTrace())
+			return
+		}
+		fallthrough
+	case 's':
+		io.WriteString(s, e.msg)
+	}
 }
 
-func Newh(status int, text string) error {
-	return struct {
-		error
-		*stack
-		*httpContext
-	}{
-		errors.New(text),
+// New returns an error with the supplied message.
+func Newh(status int, message string) error {
+	return _errorh{
+		status,
+		message,
 		callers(),
-		&httpContext{
-			status,
-		},
 	}
 }
 
-type LogFunc func(args ...interface{})
-
-func LogError(err error, logFunc LogFunc) {
-	stack := ""
-	type location interface {
-		Location() (string, int)
+// Errorf formats according to a format specifier and returns the string
+// as a value that satisfies error.
+func Errorhf(status int, format string, args ...interface{}) error {
+	return _errorh{
+		status,
+		fmt.Sprintf(format, args...),
+		callers(),
 	}
-	type message interface {
-		Message() string
-	}
-
-	for err != nil {
-		if err, ok := err.(location); ok {
-			file, line := err.Location()
-			stack = fmt.Sprintf("%s:%d: ", file, line)
-		}
-		switch err := err.(type) {
-		case message:
-			logFunc(stack, err.Message())
-		default:
-			logFunc(stack, err.Error())
-		}
-
-		cause, ok := err.(causer)
-		if !ok {
-			break
-		}
-		err = cause.Cause()
-	}
-}
-
-func Sprint(err error) string {
-	stack := ""
-	type location interface {
-		Location() (string, int)
-	}
-	type message interface {
-		Message() string
-	}
-
-	for err != nil {
-		if err, ok := err.(location); ok {
-			file, line := err.Location()
-			stack += fmt.Sprintf("%s:%d: ", file, line)
-		}
-		switch err := err.(type) {
-		case message:
-			stack += fmt.Sprintln(err.Message())
-		default:
-			stack += fmt.Sprintln(err.Error())
-		}
-
-		cause, ok := err.(causer)
-		if !ok {
-			break
-		}
-		err = cause.Cause()
-	}
-
-	return stack
 }

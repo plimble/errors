@@ -1,11 +1,22 @@
 package errors
 
 import (
+	"fmt"
 	"testing"
-
-	"github.com/Sirupsen/logrus"
 )
 
+var helloErr = Newh(400, "hello")
+
 func TestLog(t *testing.T) {
-	LogError(New("error!!"), logrus.Info)
+	type HttpStatus interface {
+		Status() int
+	}
+	x := Wrap(helloErr, "dddd")
+	y := Wrap(x, "wow")
+
+	if st, ok := Cause(y).(HttpStatus); ok {
+		fmt.Println("@@@@", st.Status())
+	}
+
+	fmt.Printf("%+v", y)
 }
