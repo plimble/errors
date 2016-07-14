@@ -7,14 +7,13 @@ import (
 
 type httpContext struct {
 	status int
-	code   string
 }
 
-func (h *httpContext) HTTPContext() (int, string) {
-	return h.status, h.code
+func (h *httpContext) HTTPContext() int {
+	return h.status
 }
 
-func Newh(status int, code, text string) error {
+func Newh(status int, text string) error {
 	return struct {
 		error
 		*stack
@@ -24,7 +23,6 @@ func Newh(status int, code, text string) error {
 		callers(),
 		&httpContext{
 			status,
-			code,
 		},
 	}
 }
