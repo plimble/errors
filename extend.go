@@ -5,20 +5,26 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/http"
 )
 
 type _errorh struct {
-	ErrStatus  int    `json:"status"`
-	ErrMessage string `json:"message"`
-	ErrCode    string `json:"code"`
-	*stack     `json:"-"`
+	ErrStatus      string `json:"status"`
+	ErrMessage     string `json:"message"`
+	ErrMessageCode string `json:"message_code"`
+	ErrCode        int    `json:"code"`
+	*stack         `json:"-"`
 }
 
-func (e _errorh) Error() string { return e.ErrMessage }
+func (e _errorh) Error() string { return e.ErrMessageCode + ": " + e.ErrMessage }
 
-func (e _errorh) Status() int { return e.ErrStatus }
+func (e _errorh) Status() string { return e.ErrStatus }
 
-func (e _errorh) Code() string { return e.ErrCode }
+func (e _errorh) Code() int { return e.ErrCode }
+
+func (e _errorh) Message() string { return e.ErrMessage }
+
+func (e _errorh) MessageCode() string { return e.ErrMessageCode }
 
 func (e _errorh) JSONError() error {
 	b, _ := json.Marshal(e)
@@ -40,10 +46,11 @@ func (e _errorh) Format(s fmt.State, verb rune) {
 }
 
 // New returns an error with the supplied message.
-func Newh(status int, code, message string) error {
+func Newh(code int, messageCode, message string) error {
 	return _errorh{
-		status,
+		http.StatusText(code),
 		message,
+		messageCode,
 		code,
 		callers(),
 	}
@@ -51,10 +58,11 @@ func Newh(status int, code, message string) error {
 
 // Errorf formats according to a format specifier and returns the string
 // as a value that satisfies error.
-func Errorhf(status int, code, format string, args ...interface{}) error {
+func Errorhf(code int, messageCode, format string, args ...interface{}) error {
 	return _errorh{
-		status,
+		http.StatusText(code),
 		fmt.Sprintf(format, args...),
+		messageCode,
 		code,
 		callers(),
 	}
@@ -64,9 +72,10 @@ func ParseJSON(err string) _errorh {
 	e := _errorh{}
 	errr := json.Unmarshal([]byte(err), &e)
 	if errr != nil {
-		e.ErrStatus = 500
-		e.ErrCode = "JSON"
+		e.ErrStatus = http.StatusText(500)
 		e.ErrMessage = errr.Error()
+		e.ErrMessageCode = "JSON"
+		e.ErrCode = 500
 		e.stack = callers()
 	}
 
@@ -74,47 +83,52 @@ func ParseJSON(err string) _errorh {
 	return e
 }
 
-func BadRequest(code, message string) error {
+func BadRequest(messageCode, message string) error {
 	return &_errorh{
+		http.StatusText(400),
+		message,
+		messageCode,
 		400,
-		message,
-		code,
 		callers(),
 	}
 }
 
-func Unauthorized(code, message string) error {
+func Unauthorized(messageCode, message string) error {
 	return &_errorh{
+		http.StatusText(401),
+		message,
+		messageCode,
 		401,
-		message,
-		code,
 		callers(),
 	}
 }
 
-func Forbidden(code, message string) error {
+func Forbidden(messageCode, message string) error {
 	return &_errorh{
+		http.StatusText(403),
+		message,
+		messageCode,
 		403,
-		message,
-		code,
 		callers(),
 	}
 }
 
-func NotFound(code, message string) error {
+func NotFound(messageCode, message string) error {
 	return &_errorh{
+		http.StatusText(404),
+		message,
+		messageCode,
 		404,
-		message,
-		code,
 		callers(),
 	}
 }
 
-func InternalServerError(code, message string) error {
+func InternalServerError(messageCode, message string) error {
 	return &_errorh{
-		500,
+		http.StatusText(500),
 		message,
-		code,
+		messageCode,
+		500,
 		callers(),
 	}
 }
