@@ -2,22 +2,28 @@ package errors
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 )
 
 type _errorh struct {
-	ErrStatus  int    `json:"code"`
+	ErrStatus  int    `json:"status"`
 	ErrMessage string `json:"message"`
 	ErrCode    string `json:"code"`
-	*stack
+	*stack     `json:"-"`
 }
 
-func (e _errorh) Error() string { return e.ErrCode }
+func (e _errorh) Error() string { return e.ErrMessage }
 
 func (e _errorh) Status() int { return e.ErrStatus }
 
 func (e _errorh) Code() string { return e.ErrCode }
+
+func (e _errorh) JSONError() error {
+	b, _ := json.Marshal(e)
+	return errors.New(string(b))
+}
 
 func (e _errorh) Format(s fmt.State, verb rune) {
 	switch verb {
