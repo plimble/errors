@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var helloErr = Newh(400, "hello")
+var helloErr = Newh(400, "BAD", "Bad error")
 
 func TestLog(t *testing.T) {
 	type HttpStatus interface {
