@@ -5,19 +5,15 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net/http"
 )
 
 type _errorh struct {
-	ErrStatus  string `json:"status"`
 	ErrMessage string `json:"message"`
 	ErrCode    int    `json:"code"`
 	*stack     `json:"-"`
 }
 
 func (e _errorh) Error() string { return e.ErrMessage }
-
-func (e _errorh) Status() string { return e.ErrStatus }
 
 func (e _errorh) Code() int { return e.ErrCode }
 
@@ -45,7 +41,6 @@ func (e _errorh) Format(s fmt.State, verb rune) {
 // New returns an error with the supplied message.
 func Newh(code int, message string) error {
 	return _errorh{
-		http.StatusText(code),
 		message,
 		code,
 		callers(),
@@ -56,7 +51,6 @@ func Newh(code int, message string) error {
 // as a value that satisfies error.
 func Errorhf(code int, format string, args ...interface{}) error {
 	return _errorh{
-		http.StatusText(code),
 		fmt.Sprintf(format, args...),
 		code,
 		callers(),
@@ -67,7 +61,6 @@ func ParseJSON(err string) _errorh {
 	e := _errorh{}
 	errr := json.Unmarshal([]byte(err), &e)
 	if errr != nil {
-		e.ErrStatus = http.StatusText(500)
 		e.ErrMessage = errr.Error()
 		e.ErrCode = 500
 		e.stack = callers()
@@ -79,7 +72,6 @@ func ParseJSON(err string) _errorh {
 
 func BadRequest(message string) error {
 	return &_errorh{
-		http.StatusText(400),
 		message,
 		400,
 		callers(),
@@ -88,7 +80,6 @@ func BadRequest(message string) error {
 
 func Unauthorized(message string) error {
 	return &_errorh{
-		http.StatusText(401),
 		message,
 		401,
 		callers(),
@@ -97,7 +88,6 @@ func Unauthorized(message string) error {
 
 func Forbidden(message string) error {
 	return &_errorh{
-		http.StatusText(403),
 		message,
 		403,
 		callers(),
@@ -106,7 +96,6 @@ func Forbidden(message string) error {
 
 func NotFound(message string) error {
 	return &_errorh{
-		http.StatusText(404),
 		message,
 		404,
 		callers(),
@@ -115,7 +104,6 @@ func NotFound(message string) error {
 
 func InternalServerError(message string) error {
 	return &_errorh{
-		http.StatusText(500),
 		message,
 		500,
 		callers(),
