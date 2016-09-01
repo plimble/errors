@@ -109,3 +109,88 @@ func InternalServerError(message string) error {
 		callers(),
 	}
 }
+
+type httpStatus interface {
+	Code() int
+	Error() string
+}
+
+type microStatus interface {
+	StatusCode() int32
+	Error() string
+}
+
+func ErrorStatus(err error) (int, error) {
+	if err == nil {
+		return 0, nil
+	}
+
+	switch wrapErr := Cause(err).(type) {
+	case httpStatus:
+		return wrapErr.Code(), wrapErr
+	case microStatus:
+		return int(wrapErr.StatusCode()), wrapErr
+	default:
+		return 500, wrapErr
+	}
+}
+
+func IsNotFound(err error) bool {
+	if err == nil {
+		return false
+	}
+	status, _ := ErrorStatus(err)
+	if status == 404 {
+		return true
+	}
+
+	return false
+}
+
+func IsInternalError(err error) bool {
+	if err == nil {
+		return false
+	}
+	status, _ := ErrorStatus(err)
+	if status == 500 {
+		return true
+	}
+
+	return false
+}
+
+func IsBadRequest(err error) bool {
+	if err == nil {
+		return false
+	}
+	status, _ := ErrorStatus(err)
+	if status == 400 {
+		return true
+	}
+
+	return false
+}
+
+func IsUnauthorized(err error) bool {
+	if err == nil {
+		return false
+	}
+	status, _ := ErrorStatus(err)
+	if status == 401 {
+		return true
+	}
+
+	return false
+}
+
+func IsForbidden(err error) bool {
+	if err == nil {
+		return false
+	}
+	status, _ := ErrorStatus(err)
+	if status == 403 {
+		return true
+	}
+
+	return false
+}
