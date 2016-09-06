@@ -194,3 +194,63 @@ func IsForbidden(err error) bool {
 
 	return false
 }
+
+func BadRequestErr(err error) error {
+	if err != nil {
+		return nil
+	}
+
+	return &_errorh{
+		err.Error(),
+		400,
+		callers(),
+	}
+}
+
+func UnauthorizedErr(err error) error {
+	if err != nil {
+		return nil
+	}
+
+	return &_errorh{
+		err.Error(),
+		401,
+		callers(),
+	}
+}
+
+func ForbiddenErr(err error) error {
+	if err != nil {
+		return nil
+	}
+
+	return &_errorh{
+		err.Error(),
+		403,
+		callers(),
+	}
+}
+
+func NotFoundErr(err error) error {
+	if err != nil {
+		return nil
+	}
+
+	return &_errorh{
+		err.Error(),
+		404,
+		callers(),
+	}
+}
+
+func InternalServerErrorErr(err error) error {
+	if err != nil {
+		return nil
+	}
+
+	return &_errorh{
+		err.Error(),
+		500,
+		callers(),
+	}
+}
