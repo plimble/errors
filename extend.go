@@ -196,7 +196,7 @@ func IsForbidden(err error) bool {
 }
 
 func BadRequestErr(err error) error {
-	if err != nil {
+	if err == nil {
 		return nil
 	}
 
@@ -208,7 +208,7 @@ func BadRequestErr(err error) error {
 }
 
 func UnauthorizedErr(err error) error {
-	if err != nil {
+	if err == nil {
 		return nil
 	}
 
@@ -220,7 +220,7 @@ func UnauthorizedErr(err error) error {
 }
 
 func ForbiddenErr(err error) error {
-	if err != nil {
+	if err == nil {
 		return nil
 	}
 
@@ -232,7 +232,7 @@ func ForbiddenErr(err error) error {
 }
 
 func NotFoundErr(err error) error {
-	if err != nil {
+	if err == nil {
 		return nil
 	}
 
@@ -244,7 +244,7 @@ func NotFoundErr(err error) error {
 }
 
 func InternalServerErrorErr(err error) error {
-	if err != nil {
+	if err == nil {
 		return nil
 	}
 
