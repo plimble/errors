@@ -57,6 +57,27 @@ func Errorhf(code int, format string, args ...interface{}) error {
 	}
 }
 
+func WithNewMessage(err error, message string) error {
+	if err == nil {
+		return nil
+	}
+
+	newerr := &fundamental{
+		msg:   message,
+		stack: callers(),
+	}
+
+	err = &withMessage{
+		cause: newerr,
+		msg:   err.Error(),
+	}
+
+	return &withStack{
+		err,
+		callers(),
+	}
+}
+
 func ParseJSON(err string) _errorh {
 	e := _errorh{}
 	errr := json.Unmarshal([]byte(err), &e)
