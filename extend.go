@@ -67,14 +67,9 @@ func WithNewMessage(err error, message string) error {
 		stack: callers(),
 	}
 
-	err = &withMessage{
+	return &withMessage{
 		cause: newerr,
 		msg:   err.Error(),
-	}
-
-	return &withStack{
-		err,
-		callers(),
 	}
 }
 
