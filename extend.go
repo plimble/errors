@@ -10,7 +10,7 @@ import (
 type _errorh struct {
 	ErrMessage string `json:"message"`
 	ErrCode    int    `json:"code"`
-	*stack     `json:"-"`
+	*Stack     `json:"-"`
 }
 
 func (e _errorh) Error() string { return e.ErrMessage }
@@ -43,7 +43,7 @@ func Newh(code int, message string) error {
 	return _errorh{
 		message,
 		code,
-		callers(),
+		Callers(),
 	}
 }
 
@@ -53,7 +53,7 @@ func Errorhf(code int, format string, args ...interface{}) error {
 	return _errorh{
 		fmt.Sprintf(format, args...),
 		code,
-		callers(),
+		Callers(),
 	}
 }
 
@@ -64,7 +64,7 @@ func WithNewMessage(err error, message string) error {
 
 	newerr := &fundamental{
 		msg:   message,
-		stack: callers(),
+		Stack: Callers(),
 	}
 
 	return &withMessage{
@@ -79,10 +79,10 @@ func ParseJSON(err string) _errorh {
 	if errr != nil {
 		e.ErrMessage = errr.Error()
 		e.ErrCode = 500
-		e.stack = callers()
+		e.Stack = Callers()
 	}
 
-	e.stack = callers()
+	e.Stack = Callers()
 	return e
 }
 
@@ -90,7 +90,7 @@ func BadRequest(message string) error {
 	return &_errorh{
 		message,
 		400,
-		callers(),
+		Callers(),
 	}
 }
 
@@ -98,7 +98,7 @@ func Unauthorized(message string) error {
 	return &_errorh{
 		message,
 		401,
-		callers(),
+		Callers(),
 	}
 }
 
@@ -106,7 +106,7 @@ func Forbidden(message string) error {
 	return &_errorh{
 		message,
 		403,
-		callers(),
+		Callers(),
 	}
 }
 
@@ -114,7 +114,7 @@ func NotFound(message string) error {
 	return &_errorh{
 		message,
 		404,
-		callers(),
+		Callers(),
 	}
 }
 
@@ -122,7 +122,7 @@ func InternalServerError(message string) error {
 	return &_errorh{
 		message,
 		500,
-		callers(),
+		Callers(),
 	}
 }
 
@@ -219,7 +219,7 @@ func BadRequestErr(err error) error {
 	return &_errorh{
 		err.Error(),
 		400,
-		callers(),
+		Callers(),
 	}
 }
 
@@ -231,7 +231,7 @@ func UnauthorizedErr(err error) error {
 	return &_errorh{
 		err.Error(),
 		401,
-		callers(),
+		Callers(),
 	}
 }
 
@@ -243,7 +243,7 @@ func ForbiddenErr(err error) error {
 	return &_errorh{
 		err.Error(),
 		403,
-		callers(),
+		Callers(),
 	}
 }
 
@@ -255,7 +255,7 @@ func NotFoundErr(err error) error {
 	return &_errorh{
 		err.Error(),
 		404,
-		callers(),
+		Callers(),
 	}
 }
 
@@ -267,6 +267,6 @@ func InternalServerErrorErr(err error) error {
 	return &_errorh{
 		err.Error(),
 		500,
-		callers(),
+		Callers(),
 	}
 }

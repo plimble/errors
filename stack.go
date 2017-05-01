@@ -98,9 +98,9 @@ func (st StackTrace) Format(s fmt.State, verb rune) {
 }
 
 // stack represents a stack of program counters.
-type stack []uintptr
+type Stack []uintptr
 
-func (s *stack) Format(st fmt.State, verb rune) {
+func (s *Stack) Format(st fmt.State, verb rune) {
 	switch verb {
 	case 'v':
 		switch {
@@ -113,7 +113,7 @@ func (s *stack) Format(st fmt.State, verb rune) {
 	}
 }
 
-func (s *stack) StackTrace() StackTrace {
+func (s *Stack) StackTrace() StackTrace {
 	f := make([]Frame, len(*s))
 	for i := 0; i < len(f); i++ {
 		f[i] = Frame((*s)[i])
@@ -121,11 +121,11 @@ func (s *stack) StackTrace() StackTrace {
 	return f
 }
 
-func callers() *stack {
+func Callers() *Stack {
 	const depth = 32
 	var pcs [depth]uintptr
 	n := runtime.Callers(3, pcs[:])
-	var st stack = pcs[0:n]
+	var st Stack = pcs[0:n]
 	return &st
 }
 

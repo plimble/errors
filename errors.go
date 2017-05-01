@@ -101,7 +101,7 @@ import (
 func New(message string) error {
 	return &fundamental{
 		msg:   message,
-		stack: callers(),
+		Stack: Callers(),
 	}
 }
 
@@ -111,14 +111,14 @@ func New(message string) error {
 func Errorf(format string, args ...interface{}) error {
 	return &fundamental{
 		msg:   fmt.Sprintf(format, args...),
-		stack: callers(),
+		Stack: Callers(),
 	}
 }
 
 // fundamental is an error that has a message and a stack, but no caller.
 type fundamental struct {
 	msg string
-	*stack
+	*Stack
 }
 
 func (f *fundamental) Error() string { return f.msg }
@@ -128,7 +128,7 @@ func (f *fundamental) Format(s fmt.State, verb rune) {
 	case 'v':
 		if s.Flag('+') {
 			io.WriteString(s, f.msg)
-			f.stack.Format(s, verb)
+			f.Stack.Format(s, verb)
 			return
 		}
 		fallthrough
@@ -147,13 +147,13 @@ func WithStack(err error) error {
 	}
 	return &withStack{
 		err,
-		callers(),
+		Callers(),
 	}
 }
 
 type withStack struct {
 	error
-	*stack
+	*Stack
 }
 
 func (w *withStack) Cause() error { return w.error }
@@ -163,7 +163,7 @@ func (w *withStack) Format(s fmt.State, verb rune) {
 	case 'v':
 		if s.Flag('+') {
 			fmt.Fprintf(s, "%+v", w.Cause())
-			w.stack.Format(s, verb)
+			w.Stack.Format(s, verb)
 			return
 		}
 		fallthrough
@@ -187,7 +187,7 @@ func Wrap(err error, message string) error {
 	}
 	return &withStack{
 		err,
-		callers(),
+		Callers(),
 	}
 }
 
@@ -204,7 +204,7 @@ func Wrapf(err error, format string, args ...interface{}) error {
 	}
 	return &withStack{
 		err,
-		callers(),
+		Callers(),
 	}
 }
 
