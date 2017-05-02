@@ -101,7 +101,7 @@ import (
 func New(message string) error {
 	return &fundamental{
 		msg:   message,
-		Stack: Callers(),
+		Stack: callers(),
 	}
 }
 
@@ -111,7 +111,7 @@ func New(message string) error {
 func Errorf(format string, args ...interface{}) error {
 	return &fundamental{
 		msg:   fmt.Sprintf(format, args...),
-		Stack: Callers(),
+		Stack: callers(),
 	}
 }
 
@@ -147,7 +147,7 @@ func WithStack(err error) error {
 	}
 	return &withStack{
 		err,
-		Callers(),
+		callers(),
 	}
 }
 
@@ -187,7 +187,7 @@ func Wrap(err error, message string) error {
 	}
 	return &withStack{
 		err,
-		Callers(),
+		callers(),
 	}
 }
 
@@ -204,7 +204,7 @@ func Wrapf(err error, format string, args ...interface{}) error {
 	}
 	return &withStack{
 		err,
-		Callers(),
+		callers(),
 	}
 }
 
