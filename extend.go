@@ -10,7 +10,7 @@ import (
 type _errorh struct {
 	ErrMessage string `json:"message"`
 	ErrCode    int    `json:"code"`
-	*stack     `json:"-"`
+	*Stack     `json:"-"`
 }
 
 func (e _errorh) Error() string { return e.ErrMessage }
@@ -64,7 +64,7 @@ func WithNewMessage(err error, message string) error {
 
 	newerr := &fundamental{
 		msg:   message,
-		stack: callers(),
+		Stack: callers(),
 	}
 
 	err = &withMessage{
@@ -84,10 +84,10 @@ func ParseJSON(err string) _errorh {
 	if errr != nil {
 		e.ErrMessage = errr.Error()
 		e.ErrCode = 500
-		e.stack = callers()
+		e.Stack = callers()
 	}
 
-	e.stack = callers()
+	e.Stack = callers()
 	return e
 }
 
