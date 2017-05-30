@@ -124,6 +124,15 @@ func UnknownErrorf(code, format string, v ...interface{}) *HTTPError {
 	return &HTTPError{520, code, fmt.Sprintf(format, v...), nil}
 }
 
+func Cause(err error) error {
+	herr, ok := err.(*HTTPError)
+	if !ok {
+		return err
+	}
+
+	return herr.Cause()
+}
+
 func FromError(err error) (*HTTPError, bool) {
 	herr, ok := err.(*HTTPError)
 	return herr, ok
