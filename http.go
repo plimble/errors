@@ -23,8 +23,7 @@ var mapGrpcCode = map[int]codes.Code{
 
 type HTTPError struct {
 	status  int
-	Code    string `json:"error"`
-	Message string `json:"error_description"`
+	Message string `json:"error"`
 	cause   error
 }
 
@@ -36,8 +35,7 @@ func (e *HTTPError) WithCause(err error) *HTTPError {
 }
 
 func (e *HTTPError) MarshalLogObject(enc zapcore.ObjectEncoder) error {
-	enc.AddString("error_code", e.Code)
-	enc.AddString("error_description", e.Message)
+	enc.AddString("error", e.Message)
 	if e.cause != nil {
 		enc.AddString("error_cause", e.cause.Error())
 	}
@@ -61,84 +59,84 @@ func Newf(format string, v ...interface{}) error {
 	return errors.New(fmt.Sprintf(format, v...))
 }
 
-func Error(status int, code, msg string) *HTTPError {
-	return &HTTPError{status, code, msg, nil}
+func Error(status int, msg string) *HTTPError {
+	return &HTTPError{status, msg, nil}
 }
 
-func Errorf(status int, code, format string, v ...interface{}) *HTTPError {
-	return &HTTPError{status, code, fmt.Sprintf(format, v...), nil}
+func Errorf(status int, format string, v ...interface{}) *HTTPError {
+	return &HTTPError{status, fmt.Sprintf(format, v...), nil}
 }
 
-func BadRequest(code, msg string) *HTTPError {
-	return &HTTPError{400, code, msg, nil}
+func BadRequest(msg string) *HTTPError {
+	return &HTTPError{400, msg, nil}
 }
 
-func BadRequestf(code, format string, v ...interface{}) *HTTPError {
-	return &HTTPError{400, code, fmt.Sprintf(format, v...), nil}
+func BadRequestf(format string, v ...interface{}) *HTTPError {
+	return &HTTPError{400, fmt.Sprintf(format, v...), nil}
 }
 
-func Unauthorized(code, msg string) *HTTPError {
-	return &HTTPError{401, code, msg, nil}
+func Unauthorized(msg string) *HTTPError {
+	return &HTTPError{401, msg, nil}
 }
 
-func Unauthorizedf(code, format string, v ...interface{}) *HTTPError {
-	return &HTTPError{401, code, fmt.Sprintf(format, v...), nil}
+func Unauthorizedf(format string, v ...interface{}) *HTTPError {
+	return &HTTPError{401, fmt.Sprintf(format, v...), nil}
 }
 
-func Forbidden(code, msg string) *HTTPError {
-	return &HTTPError{403, code, msg, nil}
+func Forbidden(msg string) *HTTPError {
+	return &HTTPError{403, msg, nil}
 }
 
-func Forbiddenf(code, format string, v ...interface{}) *HTTPError {
-	return &HTTPError{403, code, fmt.Sprintf(format, v...), nil}
+func Forbiddenf(format string, v ...interface{}) *HTTPError {
+	return &HTTPError{403, fmt.Sprintf(format, v...), nil}
 }
 
-func NotFound(code, msg string) *HTTPError {
-	return &HTTPError{400, code, msg, nil}
+func NotFound(msg string) *HTTPError {
+	return &HTTPError{400, msg, nil}
 }
 
-func NotFoundf(code, format string, v ...interface{}) *HTTPError {
-	return &HTTPError{404, code, fmt.Sprintf(format, v...), nil}
+func NotFoundf(format string, v ...interface{}) *HTTPError {
+	return &HTTPError{404, fmt.Sprintf(format, v...), nil}
 }
 
-func InternalError(code, msg string) *HTTPError {
-	return &HTTPError{400, code, msg, nil}
+func InternalError(msg string) *HTTPError {
+	return &HTTPError{400, msg, nil}
 }
 
-func InternalErrorf(code, format string, v ...interface{}) *HTTPError {
-	return &HTTPError{500, code, fmt.Sprintf(format, v...), nil}
+func InternalErrorf(format string, v ...interface{}) *HTTPError {
+	return &HTTPError{500, fmt.Sprintf(format, v...), nil}
 }
 
-func Timeout(code, msg string) *HTTPError {
-	return &HTTPError{441, code, msg, nil}
+func Timeout(msg string) *HTTPError {
+	return &HTTPError{441, msg, nil}
 }
 
-func Timeoutf(code, format string, v ...interface{}) *HTTPError {
-	return &HTTPError{441, code, fmt.Sprintf(format, v...), nil}
+func Timeoutf(format string, v ...interface{}) *HTTPError {
+	return &HTTPError{441, fmt.Sprintf(format, v...), nil}
 }
 
-func NotImplement(code, msg string) *HTTPError {
-	return &HTTPError{501, code, msg, nil}
+func NotImplement(msg string) *HTTPError {
+	return &HTTPError{501, msg, nil}
 }
 
-func NotImplementf(code, format string, v ...interface{}) *HTTPError {
-	return &HTTPError{501, code, fmt.Sprintf(format, v...), nil}
+func NotImplementf(format string, v ...interface{}) *HTTPError {
+	return &HTTPError{501, fmt.Sprintf(format, v...), nil}
 }
 
-func Unavailable(code, msg string) *HTTPError {
-	return &HTTPError{503, code, msg, nil}
+func Unavailable(msg string) *HTTPError {
+	return &HTTPError{503, msg, nil}
 }
 
-func Unavailablef(code, format string, v ...interface{}) *HTTPError {
-	return &HTTPError{503, code, fmt.Sprintf(format, v...), nil}
+func Unavailablef(format string, v ...interface{}) *HTTPError {
+	return &HTTPError{503, fmt.Sprintf(format, v...), nil}
 }
 
-func UnknownError(code, msg string) *HTTPError {
-	return &HTTPError{520, code, msg, nil}
+func UnknownError(msg string) *HTTPError {
+	return &HTTPError{520, msg, nil}
 }
 
-func UnknownErrorf(code, format string, v ...interface{}) *HTTPError {
-	return &HTTPError{520, code, fmt.Sprintf(format, v...), nil}
+func UnknownErrorf(format string, v ...interface{}) *HTTPError {
+	return &HTTPError{520, fmt.Sprintf(format, v...), nil}
 }
 
 func Cause(err error) error {
@@ -162,7 +160,7 @@ func ToGRPC(err error) error {
 	}
 
 	c := mapGrpcCode[herr.status]
-	return status.Errorf(c, "error=%s error_description=%s", herr.Code, herr.Message)
+	return status.Error(c, herr.Message)
 }
 
 func errStatus(err error) int {
