@@ -44,6 +44,14 @@ func (e *HTTPError) MarshalLogObject(enc zapcore.ObjectEncoder) error {
 	return nil
 }
 
+func Wrap(err error, httpError *HTTPError) error {
+	if err != nil {
+		return nil
+	}
+
+	return httpError.WithCause(err)
+}
+
 func Error(status int, code, msg string) *HTTPError {
 	return &HTTPError{status, code, msg, nil}
 }
