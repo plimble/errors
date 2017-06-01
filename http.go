@@ -3,6 +3,7 @@ package errors
 import (
 	"fmt"
 
+	"errors"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -50,6 +51,14 @@ func Wrap(err error, httpError *HTTPError) error {
 	}
 
 	return httpError.WithCause(err)
+}
+
+func New(msg string) error {
+	return errors.New(msg)
+}
+
+func Newf(format string, v ...interface{}) error {
+	return errors.New(fmt.Sprintf(format, v...))
 }
 
 func Error(status int, code, msg string) *HTTPError {
