@@ -92,7 +92,7 @@ func Forbiddenf(format string, v ...interface{}) *HTTPError {
 }
 
 func NotFound(msg string) *HTTPError {
-	return &HTTPError{400, msg, nil}
+	return &HTTPError{404, msg, nil}
 }
 
 func NotFoundf(format string, v ...interface{}) *HTTPError {
@@ -100,7 +100,7 @@ func NotFoundf(format string, v ...interface{}) *HTTPError {
 }
 
 func InternalError(msg string) *HTTPError {
-	return &HTTPError{400, msg, nil}
+	return &HTTPError{500, msg, nil}
 }
 
 func InternalErrorf(format string, v ...interface{}) *HTTPError {
