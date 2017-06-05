@@ -1,9 +1,9 @@
 package errors
 
 import (
+	"errors"
 	"fmt"
 
-	"errors"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -154,6 +154,10 @@ func FromError(err error) (*HTTPError, bool) {
 }
 
 func ToGRPC(err error) error {
+	if err == nil {
+		return nil
+	}
+
 	herr, ok := err.(*HTTPError)
 	if !ok {
 		return status.Error(2, err.Error())
