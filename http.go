@@ -167,7 +167,7 @@ func ToGRPC(err error) error {
 	return status.Error(c, herr.Message)
 }
 
-func errStatus(err error) int {
+func ErrStatus(err error) int {
 	herr, ok := err.(*HTTPError)
 	if !ok {
 		return 0
@@ -177,21 +177,21 @@ func errStatus(err error) int {
 }
 
 func IsNotFound(err error) bool {
-	return err != nil && errStatus(err) == 404
+	return err != nil && ErrStatus(err) == 404
 }
 
 func IsInternalError(err error) bool {
-	return err != nil && errStatus(err) == 500
+	return err != nil && ErrStatus(err) == 500
 }
 
 func IsBadRequest(err error) bool {
-	return err != nil && errStatus(err) == 400
+	return err != nil && ErrStatus(err) == 400
 }
 
 func IsUnauthorized(err error) bool {
-	return err != nil && errStatus(err) == 401
+	return err != nil && ErrStatus(err) == 401
 }
 
 func IsForbidden(err error) bool {
-	return err != nil && errStatus(err) == 403
+	return err != nil && ErrStatus(err) == 403
 }
